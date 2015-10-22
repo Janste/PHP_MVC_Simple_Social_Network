@@ -11,6 +11,7 @@ class ProfileView {
     private static $password = 'ProfileView::Password';
     private static $repeatPassword = 'ProfileView::RepeatedPassword';
     private static $saveChanges = 'ProfileView::SaveChanges';
+    private static $cookieSessionMessage = 'RegisterView::CookieSessionMessage';
 
     private $user;
 
@@ -110,13 +111,58 @@ class ProfileView {
 
     }
 
-    public function showEditProfile($message = "") {
+    /**
+     * Redirects to the register web page and sets the message.
+     */
+    public function redirect($messageType) {
+
+        $message = "";
+
+        if($messageType === true) {
+            $message = "Changes saved successfully";
+        } else {
+            $message = "Error. Use only valid characters.";
+        }
+
+        $this->setMessage($message);
+
+        $actual_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+        header("HTTP/1.1 302 Found");
+        header("Location: $actual_link?edit_profile");
+
+    }
+
+    /**
+     * Sets the message that will be later dispalyed to the user.
+     * @param $message
+     */
+    private function setMessage($message) {
+        setcookie(self::$cookieSessionMessage, $message, 0 , "/");
+    }
+
+    /**
+     * If there is a message to the user that should be shown, then this method will returns such message.
+     * @return string
+     */
+    private function getSessionMessage() {
+
+        if(isset($_COOKIE[self::$cookieSessionMessage])) {
+            $msg = $_COOKIE[self::$cookieSessionMessage];
+            setcookie(self::$cookieSessionMessage, "", time() - 1000 , "/");
+            return $msg;
+        } else {
+            return "";
+        }
+
+    }
+
+    public function showEditProfile() {
 
         return '
         <form method="post" >
 				<fieldset>
 					<legend>Edit your profile</legend>
-					<p id="' . self::$message . '">' . $message . '</p>
+					<p id="' . self::$message . '">'  . $this->getSessionMessage() .  '</p>
 
 					<label for="' . self::$firstName . '">First name:</label>
 					<input type="text" id="' . self::$firstName . '" name="' . self::$firstName . '" value="" />

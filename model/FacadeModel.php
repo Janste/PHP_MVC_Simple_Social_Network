@@ -57,11 +57,15 @@ class FacadeModel {
         return $this->authentication->getCurrentUser();
     }
 
+    public function getAllUsers() {
+        return $this->authentication->getAllUsersArray();
+    }
+
     public function updateUserData($firstName, $lastName, $emailAddress, $newPassword, $repeatNewPassword) {
 
         $this->profile = new \model\Profile($this->getCurrentlyLoggedInUser());
 
-        $this->profile->updateUser($firstName, $lastName, $emailAddress, $newPassword, $repeatNewPassword);
+        return $this->profile->updateUser($firstName, $lastName, $emailAddress, $newPassword, $repeatNewPassword);
 
     }
 }

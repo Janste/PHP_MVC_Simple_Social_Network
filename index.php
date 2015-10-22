@@ -1,7 +1,7 @@
 <?php
 
 require_once("controller/MainController.php");
-require_once('view/GeneralView.php');
+require_once('view/FacadeView.php');
 require_once('model/FacadeModel.php');
 
 // We turn on PHP output buffering feature
@@ -17,7 +17,7 @@ session_start();
 $m = new \model\FacadeModel();
 
 // Set up view
-$v = new \view\GeneralView();
+$v = new \view\FacadeView();
 
 // Run the controller
 $controller = new \controller\MainController($m, $v);

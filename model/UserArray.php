@@ -66,6 +66,12 @@ class UserArray {
                         $user->setUsername($userData);
                     } elseif ($x == 2) {
                         $user->setPassword($userData);
+                    } elseif ($x == 3) {
+                        $user->setFirstName($userData);
+                    } elseif ($x == 4) {
+                        $user->setLastName($userData);
+                    } elseif ($x == 5) {
+                        $user->setEmailAddress($userData);
                     }
                     $x++;
                 }

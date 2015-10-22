@@ -80,6 +80,10 @@ class Authentication {
         $this->currentUser = $user;
     }
 
+    public function getAllUsersArray() {
+        return $this->users;
+    }
+
     /**
      * Logs in a user
      * @param $username, which is username

@@ -6,6 +6,7 @@ require_once('ProfileView.php');
 require_once('LoginView.php');
 require_once('DateTimeView.php');
 require_once('RegisterView.php');
+require_once('UsersListView.php');
 
 /**
  * Class GeneralView
@@ -17,40 +18,22 @@ class GeneralView {
     private $lv;
     private $rv;
     private $dtv;
-    private $profileView;
+    private $pv;
+    private $ulv;
 
     private static $toRegister = 'register';
     private static $toEditProfile = 'edit_profile';
     private static $toViewProfile = 'view_profile';
+    private static $toViewUsersList = 'view_users_list';
 
-    /**
-     * Constructor
-     */
-    public function __construct() {
-        $this->lv = new \view\LoginView();
-        $this->rv = new \view\RegisterView();
-        $this->dtv = new \view\DateTimeView();
-        $this->profileView = new \view\ProfileView();
-    }
+    public function __construct(LoginView $loginView, RegisterView $registerView,
+                                DateTimeView $dateTimeView, ProfileView $profileView, UsersListView $usersListView) {
+        $this->lv = $loginView;
+        $this->rv = $registerView;
+        $this->dtv = $dateTimeView;
+        $this->pv = $profileView;
+        $this->ulv = $usersListView;
 
-    /**
-     * A method which return the LoginView class, so that its methods can be used inside controller.
-     * @return LoginView
-     */
-    public function getLoginView() {
-        return $this->lv;
-    }
-
-    /**
-     * A method which return the RegisterView class, so that its methods can be used inside controller.
-     * @return RegisterView
-     */
-    public function getRegisterView() {
-        return $this->rv;
-    }
-
-    public function getProfileView() {
-        return $this->profileView;
     }
 
     /**
@@ -144,6 +127,9 @@ class GeneralView {
                 <li>
                     <a href="?' . self::$toViewProfile . '">View profile</a>
                 </li>
+                <li>
+                    <a href="?' . self::$toViewUsersList . '">View Users</a>
+                </li>
             </ul>
         ';
     }
@@ -155,11 +141,18 @@ class GeneralView {
     public function showProperPage() {
 
         if ($this->isOnViewProfilePage()) {
-            return $this->profileView->showViewProfile();
+            return $this->pv->showViewProfile();
         }
         elseif ($this->isOnEditProfilePage()) {
-            return $this->profileView->showEditProfile("");
-        } else {
+            return $this->pv->showEditProfile();
+        }
+        elseif ($this->isOnViewUsersListPage()) {
+            return $this->ulv->showListOfAllUsers();
+        }
+        elseif ($this->ulv->isOnViewAnotherUserProfilePage()) {
+            return $this->ulv->showSpecifiedUser();
+        }
+        else {
             return '';
         }
 
@@ -217,6 +210,16 @@ class GeneralView {
         $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 
         if (strpos($url, self::$toViewProfile) !== false) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isOnViewUsersListPage() {
+        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+
+        if (strpos($url, self::$toViewUsersList) !== false) {
             return true;
         } else {
             return false;

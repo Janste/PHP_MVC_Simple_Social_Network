@@ -11,7 +11,7 @@ class MainController {
     private $model;
 
     // Constructor
-    public function __construct(\model\FacadeModel $m, \view\GeneralView $v)
+    public function __construct(\model\FacadeModel $m, \view\FacadeView $v)
     {
         $this->view = $v;
         $this->model = $m;

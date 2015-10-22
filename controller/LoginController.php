@@ -2,7 +2,7 @@
 
 namespace controller;
 
-require_once('view/GeneralView.php');
+require_once('view/FacadeView.php');
 require_once('model/FacadeModel.php');
 require_once('controller/PageController.php');
 
@@ -14,7 +14,7 @@ class LoginController {
     private $page;
 
     // Constructor
-    public function __construct(\model\FacadeModel $m, \view\GeneralView $v) {
+    public function __construct(\model\FacadeModel $m, \view\FacadeView $v) {
         $this->view = $v;
         $this->model = $m;
     }

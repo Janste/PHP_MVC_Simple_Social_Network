@@ -13,32 +13,46 @@ class Profile {
     public function updateUser($firstName, $lastName, $emailAddress, $newPassword, $repeatNewPassword) {
 
         if(!empty($firstName) && $this->isValidString($firstName)) {
-            return false;
-        }
-        elseif (!empty($lastName) && $this->isValidString($lastName)) {
-            return false;
-        }
-        elseif (!empty($emailAddress) && $this->isValidEmail($emailAddress)) {
-            return false;
-        }
-        elseif (!empty($newPassword) && !empty($repeatNewPassword) && (strlen($newPassword) > 5) && ($newPassword === $repeatNewPassword) && $this->isValidString($newPassword)) {
-            return false;
-        } else {
-
             try {
-
                 $this->updateFirstName($firstName);
-                $this->updateLastName($lastName);
-                $this->updateEmail($emailAddress);
-                $this->updatePassword($emailAddress);
-                return true;
-
+                $this->loggedInUser->setFirstName($firstName);
             } catch (\Exception $e) {
                 return false;
             }
-
         }
+
+        if (!empty($lastName) && $this->isValidString($lastName)) {
+            try {
+                $this->updateLastName($lastName);
+                $this->loggedInUser->setLastName($lastName);
+            } catch (\Exception $e) {
+                return false;
+            }
+        }
+
+        if (!empty($emailAddress) && $this->isValidEmail($emailAddress)) {
+            try {
+                $this->updateEmail($emailAddress);
+                $this->loggedInUser->setEmailAddress($emailAddress);
+            } catch (\Exception $e) {
+                return false;
+            }
+        }
+
+        if (!empty($newPassword) && !empty($repeatNewPassword) && (strlen($newPassword) > 5) && ($newPassword === $repeatNewPassword) && $this->isValidString($newPassword)) {
+            try {
+                $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT); // hash the password
+                $this->updatePassword($hashedPassword);
+                $this->loggedInUser->setPassword($newPassword);
+            } catch (\Exception $e) {
+                return false;
+            }
+        }
+
+        return true;
+
     }
+
 
     public function updateFirstName($firstName) {
         DB::getInstance()->updateRecord("users", "firstname", $this->loggedInUser->getUsername(), $firstName);
@@ -61,9 +75,9 @@ class Profile {
      */
     private function isValidString($stringToCheck) {
         if (preg_match("/[^A-Za-z0-9]/", $stringToCheck)) {
-            return true;
-        } else {
             return false;
+        } else {
+            return true;
         }
     }
 
@@ -71,10 +85,10 @@ class Profile {
      * Checks if the given email is written in a valid format
      */
     private function isValidEmail($email) {
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return true;
-        } else {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
             return false;
+        } else {
+            return true;
         }
     }
 

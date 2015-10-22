@@ -2,7 +2,7 @@
 
 namespace controller;
 
-require_once('view/GeneralView.php');
+require_once('view/FacadeView.php');
 require_once('model/FacadeModel.php');
 
 class RegisterController {
@@ -11,7 +11,7 @@ class RegisterController {
     private $model;
 
     // Constructor
-    public function __construct(\model\FacadeModel $m, \view\GeneralView $v) {
+    public function __construct(\model\FacadeModel $m, \view\FacadeView $v) {
         $this->view = $v;
         $this->model = $m;
     }

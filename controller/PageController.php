@@ -2,7 +2,7 @@
 
 namespace controller;
 
-require_once('view/GeneralView.php');
+require_once('view/FacadeView.php');
 require_once('model/FacadeModel.php');
 
 class PageController {
@@ -11,14 +11,15 @@ class PageController {
     private $model;
 
     // Constructor
-    public function __construct(\model\FacadeModel $m, \view\GeneralView $v) {
+    public function __construct(\model\FacadeModel $m, \view\FacadeView $v) {
         $this->view = $v;
         $this->model = $m;
     }
 
     public function doPageControl() {
 
-        $this->view->getProfileView()->setUser($this->model->getCurrentlyLoggedInUser());
+        $this->view->setCurrentUser($this->model->getCurrentlyLoggedInUser());
+        $this->view->setCurrentListOfUsers($this->model->getAllUsers());
 
         if($this->view->getProfileView()->checkSaveChangesButtonClicked()) {
 
@@ -28,13 +29,15 @@ class PageController {
             $password = $this->view->getProfileView()->getNewPassword();
             $passwordRepeat = $this->view->getProfileView()->getNewRepeatedPassword();
 
-            $this->model->updateUserData($firstName, $lastName, $email, $password, $passwordRepeat);
+            $this->view->getProfileView()->redirect($this->model->updateUserData($firstName, $lastName, $email, $password, $passwordRepeat));
+
+
 
         }
 
 
 
-        // TODO: Check is save changes button clicked and react
+
 
     }
 
