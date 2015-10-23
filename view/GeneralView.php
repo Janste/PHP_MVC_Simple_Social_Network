@@ -6,11 +6,11 @@ require_once('ProfileView.php');
 require_once('LoginView.php');
 require_once('DateTimeView.php');
 require_once('RegisterView.php');
-require_once('UsersListView.php');
+require_once('OtherUsersView.php');
 
 /**
  * Class GeneralView
- * This class represents a general overview of the whole view
+ * This class represents a general view and layout
  */
 
 class GeneralView {
@@ -19,7 +19,7 @@ class GeneralView {
     private $rv;
     private $dtv;
     private $pv;
-    private $ulv;
+    private $ouv;
 
     private static $toRegister = 'register';
     private static $toEditProfile = 'edit_profile';
@@ -27,12 +27,12 @@ class GeneralView {
     private static $toViewUsersList = 'view_users_list';
 
     public function __construct(LoginView $loginView, RegisterView $registerView,
-                                DateTimeView $dateTimeView, ProfileView $profileView, UsersListView $usersListView) {
+                                DateTimeView $dateTimeView, ProfileView $profileView, OtherUsersView $otherUsersView) {
         $this->lv = $loginView;
         $this->rv = $registerView;
         $this->dtv = $dateTimeView;
         $this->pv = $profileView;
-        $this->ulv = $usersListView;
+        $this->ouv = $otherUsersView;
 
     }
 
@@ -147,10 +147,10 @@ class GeneralView {
             return $this->pv->showEditProfile();
         }
         elseif ($this->isOnViewUsersListPage()) {
-            return $this->ulv->showListOfAllUsers();
+            return $this->ouv->showListOfAllUsers();
         }
-        elseif ($this->ulv->isOnViewAnotherUserProfilePage()) {
-            return $this->ulv->showSpecifiedUser();
+        elseif ($this->ouv->isOnViewAnotherUserProfilePage()) {
+            return $this->ouv->showSpecifiedUser();
         }
         else {
             return '';
@@ -216,6 +216,10 @@ class GeneralView {
         }
     }
 
+    /**
+     * Checks if user is on a webpage where he can see a list of other people's profiles
+     * @return bool
+     */
     public function isOnViewUsersListPage() {
         $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 

@@ -90,12 +90,86 @@ class DB {
         }
     }
 
+    /**
+     * Updates a user data. User is identified by the username.
+     * @param $table
+     * @param $rowName
+     * @param $userName
+     * @param $newValue
+     * @throws \Exception
+     */
     public function updateRecord($table, $rowName, $userName, $newValue) {
 
         $sql = 'UPDATE '. $table . ' SET '. $rowName . '="'. $newValue . '" WHERE username="'. $userName . '"';
 
         // Execute query
         $result = $this->conn->query($sql);
+
+        // Check for errors
+        if ($result == false) {
+            // Error with the DB. Throw an exception.
+            throw new \Exception();
+        }
+    }
+
+    /**
+     * Adds a user as a follower to another user who is the followee (a person who is being followed)
+     * @param $follower
+     * @param $followee
+     * @throws \Exception
+     */
+    public function addFollower($follower, $followee) {
+        $sql = 'INSERT INTO followers (`username_follower`,`username_followee`) VALUES ("' . $follower . '" , "' . $followee . '" )';
+
+        // Execute query
+        $result = $this->conn->query($sql);
+
+        // Check for errors
+        if ($result == false) {
+            // Error with the DB. Throw an exception.
+            throw new \Exception();
+        }
+    }
+
+    /**
+     * Returns an array of strings, which contains the usernames of those who are the followees of the
+     * currently logged in user.
+     * @param $followerUsername
+     * @return array
+     * @throws \Exception
+     */
+    public function getFollowees($followerUsername) {
+
+        $sql = "SELECT * FROM `followers` WHERE `username_follower` LIKE '$followerUsername'";
+
+        // Execute query
+        $result = mysqli_query($this->conn, $sql);
+
+        // Check for errors
+        if ($result == false) {
+            // Error with the DB. Throw an exception.
+            throw new \Exception();
+        }
+
+        $followees = array();
+
+        $index = 0;
+
+        while ($row = mysqli_fetch_row($result)) {
+            $followees[$index] = $row[2];
+            $index++;
+        }
+
+        return $followees;
+    }
+
+    public function deleteFollowee($follower, $followee) {
+        $sql = 'DELETE FROM followers WHERE username_follower = "' . $follower . '" AND username_followee = "' . $followee . '"';
+
+        // Execute query
+        $result = $this->conn->query($sql);
+
+        var_dump($result);
 
         // Check for errors
         if ($result == false) {

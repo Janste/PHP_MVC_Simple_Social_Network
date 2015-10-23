@@ -10,6 +10,15 @@ class Profile {
         $this->loggedInUser = $currentUser;
     }
 
+    /**
+     * Updates data for the currently logged in user
+     * @param $firstName
+     * @param $lastName
+     * @param $emailAddress
+     * @param $newPassword
+     * @param $repeatNewPassword
+     * @return bool
+     */
     public function updateUser($firstName, $lastName, $emailAddress, $newPassword, $repeatNewPassword) {
 
         if(!empty($firstName) && $this->isValidString($firstName)) {

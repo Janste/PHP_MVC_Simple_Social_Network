@@ -2,6 +2,11 @@
 
 namespace view;
 
+/**
+ * Class ProfileView
+ * This class is responsible for displaying the profile of the user that is currently logged in.
+ * @package view
+ */
 class ProfileView {
 
     private static $message = 'ProfileView::Message';
@@ -11,7 +16,7 @@ class ProfileView {
     private static $password = 'ProfileView::Password';
     private static $repeatPassword = 'ProfileView::RepeatedPassword';
     private static $saveChanges = 'ProfileView::SaveChanges';
-    private static $cookieSessionMessage = 'RegisterView::CookieSessionMessage';
+    private static $cookieSessionMessage = 'ProfileView::CookieSessionMessage';
 
     private $user;
 
@@ -89,12 +94,21 @@ class ProfileView {
         }
     }
 
+    /**
+     * Sets the current user. To this method a User object must be sent so that other methods in this
+     * class can read the data about that particular user.
+     * @param \model\User $loggedInUser
+     */
     public function setUser(\model\User $loggedInUser) {
 
         $this->user = $loggedInUser;
 
     }
 
+    /**
+     * Only displays the user data.
+     * @return string
+     */
     public function showViewProfile() {
 
         return '<p>Your profile information: </p>
@@ -112,7 +126,7 @@ class ProfileView {
     }
 
     /**
-     * Redirects to the register web page and sets the message.
+     * Redirects to the edit profile web page and sets the message that will be displayed when the page loads up
      */
     public function redirect($messageType) {
 
@@ -156,6 +170,10 @@ class ProfileView {
 
     }
 
+    /**
+     * Returns a string which represents the form where logged in user can change their profile data.
+     * @return string
+     */
     public function showEditProfile() {
 
         return '

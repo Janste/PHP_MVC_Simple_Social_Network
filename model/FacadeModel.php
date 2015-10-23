@@ -5,14 +5,22 @@ namespace model;
 require_once("Authentication.php");
 require_once("UserClient.php");
 require_once("Profile.php");
+require_once('Followers.php');
 
+/**
+ * Class FacadeModel
+ * This is a facade to the model classes
+ * @package model
+ */
 class FacadeModel {
 
     private $authentication;
     private $profile;
+    private $followers;
 
     public function __construct() {
         $this->authentication = new \model\Authentication();
+        $this->followers = new \model\Followers();
     }
 
     public function initialize() {
@@ -67,5 +75,17 @@ class FacadeModel {
 
         return $this->profile->updateUser($firstName, $lastName, $emailAddress, $newPassword, $repeatNewPassword);
 
+    }
+
+    public function addFollower($follower, $followee) {
+        return $this->followers->addFollower($follower, $followee);
+    }
+
+    public function getFollowees($follower) {
+        return $this->followers->getFollowees($follower);
+    }
+
+    public function removeFollowee($follower, $followee) {
+        return $this->followers->removeFollowee($follower, $followee);
     }
 }

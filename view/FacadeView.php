@@ -4,6 +4,11 @@ namespace view;
 
 require_once('GeneralView.php');
 
+/**
+ * Class FacadeView
+ * This is a facade to the view classes
+ * @package view
+ */
 class FacadeView {
 
     private $view;
@@ -11,16 +16,16 @@ class FacadeView {
     private $rv;
     private $dtv;
     private $pv;
-    private $ulv;
+    private $ouv;
 
     public function __construct() {
         $this->lv = new \view\LoginView();
         $this->rv = new \view\RegisterView();
         $this->dtv = new \view\DateTimeView();
         $this->pv = new \view\ProfileView();
-        $this->ulv = new \view\UsersListView();
+        $this->ouv = new \view\OtherUsersView();
 
-        $this->view = new \view\GeneralView($this->lv, $this->rv, $this->dtv, $this->pv, $this->ulv);
+        $this->view = new \view\GeneralView($this->lv, $this->rv, $this->dtv, $this->pv, $this->ouv);
     }
 
     public function getLoginView() {
@@ -33,6 +38,10 @@ class FacadeView {
 
     public function getProfileView() {
         return $this->pv;
+    }
+
+    public function getOtherUsersView() {
+        return $this->ouv;
     }
 
     public function showDatabaseErrorMessage() {
@@ -53,11 +62,15 @@ class FacadeView {
 
     public function setCurrentUser(\model\User $loggedInUser) {
         $this->pv->setUser($loggedInUser);
-        $this->ulv->setUser($loggedInUser);
+        $this->ouv->setUser($loggedInUser);
     }
 
     public function setCurrentListOfUsers ($users) {
-        $this->ulv->setCurrentListOfUsers($users);
+        $this->ouv->setCurrentListOfUsers($users);
+    }
+
+    public function setCurrentFollowees($followees) {
+        $this->ouv->setFollowees($followees);
     }
 
 }
