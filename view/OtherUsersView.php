@@ -21,8 +21,6 @@ class OtherUsersView {
     private static $followUserButton = 'OtherUsersView::FollowUserButton';
     private static $stopFollowingUserButton = 'OtherUsersView::StopFollowingUserButton';
 
-    // TODO: Check that this is a user array that is coming in
-
     /**
      * Sets the list of all users that are registered on this website
      * @param $usersArray
@@ -111,7 +109,18 @@ class OtherUsersView {
 
         $returnStr = '';
 
-        if(in_array($username , $this->followees)) {
+        $bool = false;
+
+        foreach ($this->followees as $followee) {
+
+            if($username === $followee->getUsername()) {
+                $bool = true;
+            }
+
+        }
+
+
+        if($bool) {
 
             $returnStr .= '<form method="post" >';
             $returnStr .= '<input type="hidden" name="' . self::$userToBeFollowed . '" value="' . $username . '" />';

@@ -10,11 +10,11 @@ class StatusHandler {
 
         $username = $user->getUsername();
 
-        DB::getInstance()->addStatus($username, $content);
+        DB::getInstance()->addStatusToDB($username, $content);
 
     }
 
-    public function getStatusArray() {
+    public function getStatusArray(\model\User $user) {
 
         $followers = new \model\Followers();
 
@@ -38,13 +38,19 @@ class StatusHandler {
                     $x++;
                 }
 
-                $followersArray = $followers->getFollowees('Admin');
+                $followeesArray = $followers->getFollowees($user);
 
-                if ($status->getAuthor() === 'Admin' || in_array($status->getAuthor(), $followersArray)) {
+                if ($status->getAuthor() === $user->getUsername() || in_array($status->getAuthor(), $followeesArray)) {
                     $statusArray[] = $status;
+                } else {
+
+                    foreach ($followeesArray as $followee) {
+
+                        if($status->getAuthor() === $followee->getUsername()) {
+                            $statusArray[] = $status;
+                        }
+                    }
                 }
-
-
             }
             return $statusArray;
         } catch (\Exception $e) { // Catch exception

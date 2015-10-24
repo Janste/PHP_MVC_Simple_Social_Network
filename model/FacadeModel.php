@@ -84,8 +84,8 @@ class FacadeModel {
         return $this->followers->addFollower($follower, $followee);
     }
 
-    public function getFollowees($follower) {
-        return $this->followers->getFollowees($follower);
+    public function getFollowees() {
+        return $this->followers->getFollowees($this->getCurrentlyLoggedInUser());
     }
 
     public function removeFollowee($follower, $followee) {
@@ -97,6 +97,6 @@ class FacadeModel {
     }
 
     public function getStatusArray() {
-        return $this->status->getStatusArray();
+        return $this->status->getStatusArray($this->getCurrentlyLoggedInUser());
     }
 }

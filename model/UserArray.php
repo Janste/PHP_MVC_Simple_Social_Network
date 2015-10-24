@@ -25,7 +25,7 @@ class UserArray {
 
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT); // hash the password
 
-            DB::getInstance()->addToDB($username, $hashedPassword); // save the new user to DB
+            DB::getInstance()->addUserToDB($username, $hashedPassword); // save the new user to DB
             $user = new User();
             $user->setUsername($username);
             $user->setPassword($hashedPassword);
@@ -56,7 +56,7 @@ class UserArray {
     public function generateArray() {
 
         try {
-            $userArr = DB::getInstance()->getAllUsers(); // Connect to DB and get users
+            $userArr = DB::getInstance()->getUsersList(); // Connect to DB and get users
 
             foreach ($userArr as $oneUser) { // For each row that represents one user
                 $user = new User();

@@ -21,7 +21,7 @@ class PageController {
         $this->view->setCurrentUser($this->model->getCurrentlyLoggedInUser());
         $this->view->setCurrentListOfUsers($this->model->getAllUsers());
 
-        $this->view->setCurrentFollowees($this->model->getFollowees($this->model->getCurrentlyLoggedInUser()->getUsername()));
+        $this->view->setCurrentFollowees($this->model->getFollowees());
 
         $this->view->getStatusView()->setStatusList($this->model->getStatusArray());
 
@@ -59,6 +59,7 @@ class PageController {
         elseif($this->view->getStatusView()->checkIfSubmitStatusButtonClicked()) {
 
             $this->model->addNewStatus($this->view->getStatusView()->getNewStatus());
+            $this->view->getStatusView()->redirect();
 
         }
 

@@ -47,25 +47,31 @@ class DB {
     }
 
     /**
-     * Method which returns an array containing rows from the DB
-     * @return array containing rows from the DB
-     * @throws \Exception, if problems appeared with the database
+     * Returns an array which contains queries from the users table inside the DB
+     * @return array
+     * @throws \Exception
      */
-    public function getAllUsers() {
+    public function getUsersList() {
+        return $this->getAllQueries("users");
+    }
 
-            $sql = "SELECT * FROM users"; // Select all entries
-            $result = $this->conn->query($sql); // Execute and prepare for analysis
+    /**
+     * Returns an array which contains queries from the status table inside the DB
+     * @return array
+     * @throws \Exception
+     */
+    public function getStatusList() {
+        return $this->getAllQueries("status");
+    }
 
-            if ($result == false) { // Error with the DB. Throw an exception.
-                throw new \Exception();
-            }
-            // If no error, continue
-
-            $array = array();
-            while ($row = $result->fetch_assoc()) { // Fetch row after row
-                $array[] = $row;
-            }
-            return $array;
+    /**
+     * Returns an array of strings, which contains the usernames of those who are the followees of the
+     * currently logged in user
+     * @return array
+     * @throws \Exception
+     */
+    public function getFolloweesList() {
+        return $this->getAllQueries("followers");
     }
 
     /**
@@ -74,42 +80,8 @@ class DB {
      * @param $password
      * @throws \Exception, if an error occurs with the DB
      */
-    public function addToDB($username, $password) {
-        // Prepare query
-        $sql = "INSERT INTO users " .
-                "(`username`,`password`) " .
-                "VALUES ('$username', '$password')";
-
-        // Execute query
-        $result = $this->conn->query($sql);
-
-        // Check for errors
-        if ($result == false) {
-            // Error with the DB. Throw an exception.
-            throw new \Exception();
-        }
-    }
-
-    /**
-     * Updates a user data. User is identified by the username.
-     * @param $table
-     * @param $rowName
-     * @param $userName
-     * @param $newValue
-     * @throws \Exception
-     */
-    public function updateRecord($table, $rowName, $userName, $newValue) {
-
-        $sql = 'UPDATE '. $table . ' SET '. $rowName . '="'. $newValue . '" WHERE username="'. $userName . '"';
-
-        // Execute query
-        $result = $this->conn->query($sql);
-
-        // Check for errors
-        if ($result == false) {
-            // Error with the DB. Throw an exception.
-            throw new \Exception();
-        }
+    public function addUserToDB($username, $password) {
+        $this->insertTwoStringQueries("users", "username", "password", $username, $password);
     }
 
     /**
@@ -118,63 +90,8 @@ class DB {
      * @param $followee
      * @throws \Exception
      */
-    public function addFollower($follower, $followee) {
-        $sql = 'INSERT INTO followers (`username_follower`,`username_followee`) VALUES ("' . $follower . '" , "' . $followee . '" )';
-
-        // Execute query
-        $result = $this->conn->query($sql);
-
-        // Check for errors
-        if ($result == false) {
-            // Error with the DB. Throw an exception.
-            throw new \Exception();
-        }
-    }
-
-    /**
-     * Returns an array of strings, which contains the usernames of those who are the followees of the
-     * currently logged in user.
-     * @param $followerUsername
-     * @return array
-     * @throws \Exception
-     */
-    public function getFollowees($followerUsername) {
-
-        $sql = "SELECT * FROM `followers` WHERE `username_follower` LIKE '$followerUsername'";
-
-        // Execute query
-        $result = mysqli_query($this->conn, $sql);
-
-        // Check for errors
-        if ($result == false) {
-            // Error with the DB. Throw an exception.
-            throw new \Exception();
-        }
-
-        $followees = array();
-
-        $index = 0;
-
-        while ($row = mysqli_fetch_row($result)) {
-            $followees[$index] = $row[2];
-            $index++;
-        }
-
-        return $followees;
-    }
-
-    public function deleteFollowee($follower, $followee) {
-        $sql = 'DELETE FROM followers WHERE username_follower = "' . $follower . '" AND username_followee = "' . $followee . '"';
-
-        // Execute query
-        $result = $this->conn->query($sql);
-
-        // Check for errors
-        if ($result == false) {
-            // Error with the DB. Throw an exception.
-            throw new \Exception();
-        }
-
+    public function addFollowerToDB($follower, $followee) {
+        $this->insertTwoStringQueries("followers", "username_follower", "username_followee", $follower, $followee);
     }
 
     /**
@@ -183,7 +100,7 @@ class DB {
      * @param $content
      * @throws \Exception
      */
-    public function addStatus($username, $content) {
+    public function addStatusToDB($username, $content) {
 
         $date = date('Y-m-d H:i:s');
 
@@ -195,13 +112,61 @@ class DB {
 
         $stmt->execute();
 
+        // Check for errors
+        if ($stmt == false) {
+            // Error with the DB. Throw an exception.
+            throw new \Exception();
+        }
+    }
+
+    /**
+     * Updates a user inside the users table. User is identified by the username
+     * @param $columnName
+     * @param $userName
+     * @param $newValue
+     * @throws \Exception
+     */
+    public function updateUser($columnName, $userName, $newValue) {
+        $this->updateRecord("users", "username" , $columnName, $userName, $newValue);
+    }
+
+    /**
+     * Deletes a followee for a given user, identifies as follower
+     * @param $follower
+     * @param $followee
+     * @throws \Exception
+     */
+    public function deleteFollowee($follower, $followee) {
+        $this->deleteRecord("followers", "username_follower", "username_followee", $follower, $followee);
+    }
 
 
-//        $sql = 'INSERT INTO status (`username`,`time`,`content`) VALUES
-//                ("' . $username . '" , now() , "' . $content . '" )';
+    public function getAllQueries($table) {
 
-        // Execute query
-        //$result = $this->conn->query($sql);
+        $sql = "SELECT * FROM " . $table; // Select all queries
+
+        $result = $this->conn->query($sql); // Execute and prepare for analysis
+
+        if ($result == false) { // Error with the DB. Throw an exception.
+            throw new \Exception();
+        }
+
+        $array = array();
+        while ($row = $result->fetch_assoc()) { // Fetch row after row
+            $array[] = $row;
+        }
+        return $array;
+    }
+
+    public function insertTwoStringQueries($table, $column1, $column2, $argument1, $argument2) {
+
+        $sql = 'INSERT INTO ' . $table . ' (`' . $column1 . '`,`' . $column2 . '`) VALUES (? , ?)';
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bind_param('ss', $argument1, $argument2);
+
+        $stmt->execute();
 
         // Check for errors
         if ($stmt == false) {
@@ -210,21 +175,41 @@ class DB {
         }
     }
 
-    public function getStatusList() {
+    /**
+     * Updates a record
+     * @param $table
+     * @param $identifier
+     * @param $columnName
+     * @param $userName
+     * @param $newValue
+     * @throws \Exception
+     */
+    public function updateRecord($table, $identifier, $columnName, $userName, $newValue) {
 
-        $sql = "SELECT * FROM status"; // Select all entries
-        $result = $this->conn->query($sql); // Execute and prepare for analysis
+        $sql = 'UPDATE ' . $table . ' SET '. $columnName . '="'. $newValue . '" WHERE ' . $identifier . ' = "'. $userName . '"';
 
-        if ($result == false) { // Error with the DB. Throw an exception.
+        // Execute query
+        $result = $this->conn->query($sql);
+
+        // Check for errors
+        if ($result == false) {
+            // Error with the DB. Throw an exception.
             throw new \Exception();
         }
+    }
 
-        // If no error, continue
+    public function deleteRecord($table, $identifier1, $identifier2, $follower, $followee) {
+        $sql = 'DELETE FROM ' . $table .
+            ' WHERE ' . $identifier1 . ' = "' . $follower . '"
+            AND ' . $identifier2 . ' = "' . $followee . '"';
 
-        $array = array();
-        while ($row = $result->fetch_assoc()) { // Fetch row after row
-            $array[] = $row;
+        // Execute query
+        $result = $this->conn->query($sql);
+
+        // Check for errors
+        if ($result == false) {
+            // Error with the DB. Throw an exception.
+            throw new \Exception();
         }
-        return $array;
     }
 }

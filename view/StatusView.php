@@ -80,4 +80,17 @@ class StatusView {
 
     }
 
+    // TODO: Improve the redirect
+    /**
+     * Redirects to the same page
+     */
+    public function redirect() {
+
+        $actual_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+
+        header("HTTP/1.1 302 Found");
+        header("Location: $actual_link?status");
+
+    }
+
 }

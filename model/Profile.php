@@ -64,19 +64,19 @@ class Profile {
 
 
     public function updateFirstName($firstName) {
-        DB::getInstance()->updateRecord("users", "firstname", $this->loggedInUser->getUsername(), $firstName);
+        DB::getInstance()->updateRecord("firstname", $this->loggedInUser->getUsername(), $firstName);
     }
 
     public function updateLastName($lastName) {
-        DB::getInstance()->updateRecord("users", "lastname", $this->loggedInUser->getUsername(), $lastName);
+        DB::getInstance()->updateRecord("lastname", $this->loggedInUser->getUsername(), $lastName);
     }
 
     public function updateEmail($email) {
-        DB::getInstance()->updateRecord("users", "email", $this->loggedInUser->getUsername(), $email);
+        DB::getInstance()->updateRecord("email", $this->loggedInUser->getUsername(), $email);
     }
 
     public function updatePassword($pwd) {
-        DB::getInstance()->updateRecord("users", "password", $this->loggedInUser->getUsername(), $pwd);
+        DB::getInstance()->updateRecord("password", $this->loggedInUser->getUsername(), $pwd);
     }
 
     /**

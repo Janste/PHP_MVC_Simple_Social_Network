@@ -17,7 +17,7 @@ class Followers {
      */
     public function addFollower($follower, $followee) {
         try {
-            DB::getInstance()->addFollower($follower, $followee);
+            DB::getInstance()->addFollowerToDB($follower, $followee);
             return true;
         } catch (\Exception $e) {
             return false;
@@ -25,13 +25,60 @@ class Followers {
     }
 
     /**
-     * Returns a string array. That array contains usernames of those people who the currently logged in user wants
-     * to follow (his or hers followees)
+     * Returns an array of users who are the followees of the currently logged in follower
      * @param $follower
      * @return mixed
      */
-    public function getFollowees($follower) {
-        return DB::getInstance()->getFollowees($follower);
+    public function getFollowees(\model\User $follower) {
+
+        // Username of our currently logged in user
+        $loggedInUsername = $follower->getUsername();
+
+        // An array which will contain all followees
+        $followeesArray = array();
+
+        // Get an array of all users
+        $allUsers = new UserArray();
+        $allUsers->generateArray();
+        $usersList = $allUsers->getUsers();
+
+        try {
+            $followersTable = DB::getInstance()->getFolloweesList(); // Get list of followers and followees
+
+            //var_dump($followersTable);
+
+            foreach ($followersTable as $oneRow) { // For each row
+
+                $x = 0;
+                $usernameFollower = "";
+                $usernameFollowee = "";
+
+                foreach ($oneRow as $value) {
+                    if ($x === 1) {
+                        $usernameFollower = $value;
+                    } elseif($x === 2) {
+                        $usernameFollowee = $value;
+                    }
+                    $x++;
+                }
+
+                if($usernameFollower === $loggedInUsername) {
+
+                    foreach ($usersList as $oneUser) {
+
+                        if ($usernameFollowee === $oneUser->getUsername()) {
+
+                            $followeesArray[] = $oneUser;
+
+                        }
+                    }
+                }
+            }
+            //print_r($followeesArray);
+            return $followeesArray;
+        } catch (\Exception $e) { // Catch exception
+            return false;
+        }
     }
 
     /**
