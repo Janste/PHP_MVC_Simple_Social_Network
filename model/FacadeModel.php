@@ -6,6 +6,7 @@ require_once("Authentication.php");
 require_once("UserClient.php");
 require_once("Profile.php");
 require_once('Followers.php');
+require_once('StatusHandler.php');
 
 /**
  * Class FacadeModel
@@ -17,10 +18,12 @@ class FacadeModel {
     private $authentication;
     private $profile;
     private $followers;
+    private $status;
 
     public function __construct() {
         $this->authentication = new \model\Authentication();
         $this->followers = new \model\Followers();
+        $this->status = new \model\StatusHandler();
     }
 
     public function initialize() {
@@ -87,5 +90,13 @@ class FacadeModel {
 
     public function removeFollowee($follower, $followee) {
         return $this->followers->removeFollowee($follower, $followee);
+    }
+
+    public function addNewStatus($content) {
+        $this->status->addNewStatus($this->getCurrentlyLoggedInUser(), $content);
+    }
+
+    public function getStatusArray() {
+        return $this->status->getStatusArray();
     }
 }

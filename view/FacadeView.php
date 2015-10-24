@@ -17,6 +17,7 @@ class FacadeView {
     private $dtv;
     private $pv;
     private $ouv;
+    private $sv;
 
     public function __construct() {
         $this->lv = new \view\LoginView();
@@ -24,8 +25,10 @@ class FacadeView {
         $this->dtv = new \view\DateTimeView();
         $this->pv = new \view\ProfileView();
         $this->ouv = new \view\OtherUsersView();
+        $this->sv = new \view\StatusView();
 
-        $this->view = new \view\GeneralView($this->lv, $this->rv, $this->dtv, $this->pv, $this->ouv);
+
+        $this->view = new \view\GeneralView($this->lv, $this->rv, $this->dtv, $this->pv, $this->ouv, $this->sv);
     }
 
     public function getLoginView() {
@@ -42,6 +45,10 @@ class FacadeView {
 
     public function getOtherUsersView() {
         return $this->ouv;
+    }
+
+    public function getStatusView() {
+        return $this->sv;
     }
 
     public function showDatabaseErrorMessage() {

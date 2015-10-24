@@ -23,6 +23,8 @@ class PageController {
 
         $this->view->setCurrentFollowees($this->model->getFollowees($this->model->getCurrentlyLoggedInUser()->getUsername()));
 
+        $this->view->getStatusView()->setStatusList($this->model->getStatusArray());
+
         if($this->view->getProfileView()->checkSaveChangesButtonClicked()) {
 
             $firstName = $this->view->getProfileView()->getFirstName();
@@ -52,6 +54,11 @@ class PageController {
             $this->model->removeFollowee($followerUsername, $followeeUsername);
 
             $this->view->getOtherUsersView()->redirect($followeeUsername);
+
+        }
+        elseif($this->view->getStatusView()->checkIfSubmitStatusButtonClicked()) {
+
+            $this->model->addNewStatus($this->view->getStatusView()->getNewStatus());
 
         }
 

@@ -169,13 +169,62 @@ class DB {
         // Execute query
         $result = $this->conn->query($sql);
 
-        var_dump($result);
-
         // Check for errors
         if ($result == false) {
             // Error with the DB. Throw an exception.
             throw new \Exception();
         }
 
+    }
+
+    /**
+     * Adds a new status to the DB.
+     * @param $username
+     * @param $content
+     * @throws \Exception
+     */
+    public function addStatus($username, $content) {
+
+        $date = date('Y-m-d H:i:s');
+
+        $sql = 'INSERT INTO status (`username`,`time`,`content`) VALUES (? , ? , ? )';
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bind_param('sss', $username, $date, $content);
+
+        $stmt->execute();
+
+
+
+//        $sql = 'INSERT INTO status (`username`,`time`,`content`) VALUES
+//                ("' . $username . '" , now() , "' . $content . '" )';
+
+        // Execute query
+        //$result = $this->conn->query($sql);
+
+        // Check for errors
+        if ($stmt == false) {
+            // Error with the DB. Throw an exception.
+            throw new \Exception();
+        }
+    }
+
+    public function getStatusList() {
+
+        $sql = "SELECT * FROM status"; // Select all entries
+        $result = $this->conn->query($sql); // Execute and prepare for analysis
+
+        if ($result == false) { // Error with the DB. Throw an exception.
+            throw new \Exception();
+        }
+
+        // If no error, continue
+
+        $array = array();
+        while ($row = $result->fetch_assoc()) { // Fetch row after row
+            $array[] = $row;
+        }
+        return $array;
     }
 }

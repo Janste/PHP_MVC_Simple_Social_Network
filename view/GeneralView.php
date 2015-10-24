@@ -7,6 +7,7 @@ require_once('LoginView.php');
 require_once('DateTimeView.php');
 require_once('RegisterView.php');
 require_once('OtherUsersView.php');
+require_once('StatusView.php');
 
 /**
  * Class GeneralView
@@ -20,19 +21,23 @@ class GeneralView {
     private $dtv;
     private $pv;
     private $ouv;
+    private $sv;
 
     private static $toRegister = 'register';
     private static $toEditProfile = 'edit_profile';
     private static $toViewProfile = 'view_profile';
-    private static $toViewUsersList = 'view_users_list';
+    private static $toViewOtherUsers = 'view_users_list';
+    private static $toStatus = 'status';
 
     public function __construct(LoginView $loginView, RegisterView $registerView,
-                                DateTimeView $dateTimeView, ProfileView $profileView, OtherUsersView $otherUsersView) {
+                                DateTimeView $dateTimeView, ProfileView $profileView, OtherUsersView $otherUsersView,
+                                StatusView $statusView) {
         $this->lv = $loginView;
         $this->rv = $registerView;
         $this->dtv = $dateTimeView;
         $this->pv = $profileView;
         $this->ouv = $otherUsersView;
+        $this->sv = $statusView;
 
     }
 
@@ -128,7 +133,10 @@ class GeneralView {
                     <a href="?' . self::$toViewProfile . '">View profile</a>
                 </li>
                 <li>
-                    <a href="?' . self::$toViewUsersList . '">View Users</a>
+                    <a href="?' . self::$toViewOtherUsers . '">View Users</a>
+                </li>
+                <li>
+                    <a href="?' . self::$toStatus . '">View Status</a>
                 </li>
             </ul>
         ';
@@ -151,6 +159,9 @@ class GeneralView {
         }
         elseif ($this->ouv->isOnViewAnotherUserProfilePage()) {
             return $this->ouv->showSpecifiedUser();
+        }
+        elseif($this->isOnViewStatusPage()) {
+            return $this->sv->showStatusPage();
         }
         else {
             return '';
@@ -223,7 +234,17 @@ class GeneralView {
     public function isOnViewUsersListPage() {
         $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 
-        if (strpos($url, self::$toViewUsersList) !== false) {
+        if (strpos($url, self::$toViewOtherUsers) !== false) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isOnViewStatusPage() {
+        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+
+        if (strpos($url, self::$toStatus) !== false) {
             return true;
         } else {
             return false;
