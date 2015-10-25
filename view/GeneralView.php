@@ -11,7 +11,7 @@ require_once('StatusView.php');
 
 /**
  * Class GeneralView
- * This class represents a general view and layout
+ * This class represents a general view, layout, menu, etc...
  */
 
 class GeneralView {
@@ -22,12 +22,6 @@ class GeneralView {
     private $pv;
     private $ouv;
     private $sv;
-
-    private static $toRegister = 'register';
-    private static $toEditProfile = 'edit_profile';
-    private static $toViewProfile = 'view_profile';
-    private static $toViewOtherUsers = 'view_users_list';
-    private static $toStatus = 'status';
 
     public function __construct(LoginView $loginView, RegisterView $registerView,
                                 DateTimeView $dateTimeView, ProfileView $profileView, OtherUsersView $otherUsersView,
@@ -67,7 +61,7 @@ class GeneralView {
       <html>
         <head>
           <meta charset="utf-8">
-          <title>Login Example</title>
+          <title>Simple Social Network</title>
         </head>
         <body>
 
@@ -98,7 +92,7 @@ class GeneralView {
      * @return string
      */
     private function showProperForm() {
-        if($this->isOnRegisterPage()) {
+        if($this->rv->isOnRegisterPage()) {
             return $this->rv->generateRegisterForm();
         } else {
             return $this->lv->response();
@@ -127,16 +121,16 @@ class GeneralView {
         return '
             <ul>
                 <li>
-                    <a href="?' . self::$toEditProfile . '">Edit profile</a>
+                    <a href="?' . $this->pv->getEditProfileUrl() . '">Edit profile</a>
                 </li>
                 <li>
-                    <a href="?' . self::$toViewProfile . '">View profile</a>
+                    <a href="?' . $this->pv->getViewProfileUrl() . '">View profile</a>
                 </li>
                 <li>
-                    <a href="?' . self::$toViewOtherUsers . '">View Users</a>
+                    <a href="?' . $this->ouv->getViewOtherUsersUrl() . '">View Users</a>
                 </li>
                 <li>
-                    <a href="?' . self::$toStatus . '">View Status</a>
+                    <a href="?' . $this->sv->getStatusUrl() . '">View Status</a>
                 </li>
             </ul>
         ';
@@ -148,19 +142,19 @@ class GeneralView {
      */
     public function showProperPage() {
 
-        if ($this->isOnViewProfilePage()) {
+        if ($this->pv->isOnViewProfilePage()) {
             return $this->pv->showViewProfile();
         }
-        elseif ($this->isOnEditProfilePage()) {
+        elseif ($this->pv->isOnEditProfilePage()) {
             return $this->pv->showEditProfile();
         }
-        elseif ($this->isOnViewUsersListPage()) {
+        elseif ($this->ouv->isOnViewUsersListPage()) {
             return $this->ouv->showListOfAllUsers();
         }
         elseif ($this->ouv->isOnViewAnotherUserProfilePage()) {
             return $this->ouv->showSpecifiedUser();
         }
-        elseif($this->isOnViewStatusPage()) {
+        elseif($this->sv->isOnViewStatusPage()) {
             return $this->sv->showStatusPage();
         }
         else {
@@ -175,79 +169,13 @@ class GeneralView {
      */
     private function showRegisterReturnLink($isLoggedIn) {
         if (!$isLoggedIn) {
-            if($this->isOnRegisterPage()) {
+            if($this->rv->isOnRegisterPage()) {
                 return '<a href="?">Back to login</a>';
             } else {
-                return '<a href="?' . self::$toRegister . '">Register a new user</a>';
+                return '<a href="?' . $this->rv->getRegisterUrl() . '">Register a new user</a>';
             }
         } else {
             return '';
-        }
-    }
-
-    /**
-     * Checks if we are currently on register page or on normal page
-     * @return bool
-     */
-    public function isOnRegisterPage() {
-        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-
-        if (strpos($url, self::$toRegister) !== false) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Checks if user is currently on edit profile
-     * @return bool
-     */
-    public function isOnEditProfilePage() {
-        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-
-        if (strpos($url, self::$toEditProfile) !== false) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Checks if user is currently on view profile
-     * @return bool
-     */
-    public function isOnViewProfilePage() {
-        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-
-        if (strpos($url, self::$toViewProfile) !== false) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Checks if user is on a webpage where he can see a list of other people's profiles
-     * @return bool
-     */
-    public function isOnViewUsersListPage() {
-        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-
-        if (strpos($url, self::$toViewOtherUsers) !== false) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function isOnViewStatusPage() {
-        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-
-        if (strpos($url, self::$toStatus) !== false) {
-            return true;
-        } else {
-            return false;
         }
     }
 

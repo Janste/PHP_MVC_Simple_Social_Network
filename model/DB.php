@@ -104,7 +104,7 @@ class DB {
 
         $date = date('Y-m-d H:i:s');
 
-        $sql = 'INSERT INTO status (`username`,`time`,`content`) VALUES (? , ? , ? )';
+        $sql = 'INSERT INTO status (`username`,`date_and_time`,`content`) VALUES (? , ? , ? )';
 
         $stmt = $this->conn->prepare($sql);
 

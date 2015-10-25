@@ -4,6 +4,7 @@ namespace view;
 
 class RegisterView {
 
+    // Field names in the form
     private static $message = 'RegisterView::Message';
     private static $username = 'RegisterView::UserName';
     private static $password = 'RegisterView::Password';
@@ -12,15 +13,47 @@ class RegisterView {
     private static $cookieSessionMessage = 'RegisterView::CookieSessionMessage';
     private static $cookieUsername = 'RegisterView::CookieUsername';
 
+    // This web page's URL ending
+    private static $registerUrl = "register";
+
+    // Bool values, used in order to determine what error message to show to user
     private $invalidCharactersFound = false;
     private $userAlreadyExists = false;
 
+    /**
+     * Sets the bool value for invalid characters found error
+     */
     public function setInvalidCharactersFound() {
         $this->invalidCharactersFound = true;
     }
 
+    /**
+     * Sets the bool value for user already exists error
+     */
     public function setUserAlreadyExists() {
         $this->userAlreadyExists = true;
+    }
+
+    /**
+     * Returns the URL ending for register webpage
+     * @return string
+     */
+    public function getRegisterUrl() {
+        return self::$registerUrl;
+    }
+
+    /**
+     * Checks if user is currently on register page
+     * @return bool
+     */
+    public function isOnRegisterPage() {
+        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+
+        if (strpos($url, $this->getRegisterUrl()) !== false) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

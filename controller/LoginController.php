@@ -40,6 +40,7 @@ class LoginController {
 
             } else {
 
+                // If user if logged in, but didn't click on log out button, then launch page controller
                 $this->page = new PageController($this->model, $this->view);
 
                 $this->page->doPageControl();

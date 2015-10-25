@@ -80,16 +80,16 @@ class FacadeModel {
 
     }
 
-    public function addFollower($follower, $followee) {
-        return $this->followers->addFollower($follower, $followee);
+    public function addFollower($followee) {
+        return $this->followers->addFollower($this->getCurrentlyLoggedInUser(), $followee);
     }
 
     public function getFollowees() {
-        return $this->followers->getFollowees($this->getCurrentlyLoggedInUser());
+        return $this->followers->getFollowees($this->getCurrentlyLoggedInUser(), $this->getAllUsers());
     }
 
-    public function removeFollowee($follower, $followee) {
-        return $this->followers->removeFollowee($follower, $followee);
+    public function removeFollowee($followee) {
+        return $this->followers->removeFollowee($this->getCurrentlyLoggedInUser(), $followee);
     }
 
     public function addNewStatus($content) {

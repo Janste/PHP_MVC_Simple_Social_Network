@@ -18,12 +18,11 @@ class PageController {
 
     public function doPageControl() {
 
+        // Get information from model about the situation (who is logged in, etc.) and send that information to the view
         $this->view->setCurrentUser($this->model->getCurrentlyLoggedInUser());
         $this->view->setCurrentListOfUsers($this->model->getAllUsers());
-
         $this->view->setCurrentFollowees($this->model->getFollowees());
-
-        $this->view->getStatusView()->setStatusList($this->model->getStatusArray());
+        $this->view->setStatusList($this->model->getStatusArray());
 
         if($this->view->getProfileView()->checkSaveChangesButtonClicked()) {
 
@@ -38,20 +37,18 @@ class PageController {
         }
         elseif ($this->view->getOtherUsersView()->checkFollowButtonClicked()) {
 
-            $followerUsername = $this->model->getCurrentlyLoggedInUser()->getUsername();
             $followeeUsername = $this->view->getOtherUsersView()->getOtherUserData();
 
-            $this->model->addFollower($followerUsername, $followeeUsername);
+            $this->model->addFollower($followeeUsername);
 
             $this->view->getOtherUsersView()->redirect($followeeUsername);
 
         }
         elseif($this->view->getOtherUsersView()->checkStopFollowingButtonClicked()) {
 
-            $followerUsername = $this->model->getCurrentlyLoggedInUser()->getUsername();
             $followeeUsername = $this->view->getOtherUsersView()->getOtherUserData();
 
-            $this->model->removeFollowee($followerUsername, $followeeUsername);
+            $this->model->removeFollowee($followeeUsername);
 
             $this->view->getOtherUsersView()->redirect($followeeUsername);
 

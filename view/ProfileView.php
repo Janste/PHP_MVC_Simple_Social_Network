@@ -9,6 +9,7 @@ namespace view;
  */
 class ProfileView {
 
+    // Field names
     private static $message = 'ProfileView::Message';
     private static $firstName = 'ProfileView::FirstName';
     private static $lastName = 'ProfileView::LastName';
@@ -18,7 +19,47 @@ class ProfileView {
     private static $saveChanges = 'ProfileView::SaveChanges';
     private static $cookieSessionMessage = 'ProfileView::CookieSessionMessage';
 
+    // Profile web page's URL ending
+    private static $editProfileURL = 'edit_profile';
+    private static $viewProfileUrl = 'view_profile';
+
     private $user;
+
+    public function getEditProfileUrl() {
+        return self::$editProfileURL;
+    }
+
+    public function getViewProfileUrl() {
+        return self::$viewProfileUrl;
+    }
+
+    /**
+     * Checks if user is currently on edit profile
+     * @return bool
+     */
+    public function isOnEditProfilePage() {
+        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+
+        if (strpos($url, $this->getEditProfileUrl()) !== false) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if user is currently on view profile
+     * @return bool
+     */
+    public function isOnViewProfilePage() {
+        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+
+        if (strpos($url, $this->getViewProfileUrl()) !== false) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Get first name from the form.

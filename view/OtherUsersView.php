@@ -17,9 +17,31 @@ class OtherUsersView {
     private static $showProfile = 'profile';
     private static $keyCharacter = '=';
 
+    // Field names
     private static $userToBeFollowed = 'OtherUsersView::FollowUser';
     private static $followUserButton = 'OtherUsersView::FollowUserButton';
     private static $stopFollowingUserButton = 'OtherUsersView::StopFollowingUserButton';
+
+    // This web page's Url
+    private static $viewOtherUsersUrl = 'view_users_list';
+
+    public function getViewOtherUsersUrl() {
+        return self::$viewOtherUsersUrl;
+    }
+
+    /**
+     * Checks if user is on a webpage where he can see a list of other people's profiles
+     * @return bool
+     */
+    public function isOnViewUsersListPage() {
+        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+
+        if (strpos($url, $this->getViewOtherUsersUrl()) !== false) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Sets the list of all users that are registered on this website

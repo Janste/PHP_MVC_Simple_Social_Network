@@ -4,10 +4,28 @@ namespace view;
 
 class StatusView {
 
+    // A status list
     private $statusList = array();
 
+    // Field names
     private static $status = 'StatusView::Status';
     private static $submit = 'StatusView::Submit';
+
+    private static $statusUrl = 'status';
+
+    public function getStatusUrl() {
+        return self::$statusUrl;
+    }
+
+    public function isOnViewStatusPage() {
+        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+
+        if (strpos($url, $this->getStatusUrl()) !== false) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Returns a string which contains a text area where user can insert their status
@@ -17,7 +35,7 @@ class StatusView {
 
         $resultString = '';
 
-        $resultString .= '<form method="post" >';
+        $resultString .= '<form method="post">';
         $resultString .= '<textarea rows="4" cols="50" name ="' . self::$status . '">';
         $resultString .= '</textarea>';
         $resultString .= '<br />';
@@ -80,7 +98,6 @@ class StatusView {
 
     }
 
-    // TODO: Improve the redirect
     /**
      * Redirects to the same page
      */
@@ -89,7 +106,7 @@ class StatusView {
         $actual_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
 
         header("HTTP/1.1 302 Found");
-        header("Location: $actual_link?status");
+        header("Location: $actual_link?" . $this->getStatusUrl());
 
     }
 

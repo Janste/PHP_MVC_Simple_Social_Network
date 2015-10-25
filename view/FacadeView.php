@@ -64,7 +64,7 @@ class FacadeView {
     }
 
     public function isOnRegisterPage() {
-        return $this->view->isOnRegisterPage();
+        return $this->rv->isOnRegisterPage();
     }
 
     public function setCurrentUser(\model\User $loggedInUser) {
@@ -77,7 +77,21 @@ class FacadeView {
     }
 
     public function setCurrentFollowees($followees) {
-        $this->ouv->setFollowees($followees);
+
+        if($followees === false) {
+            $this->view->showDatabaseErrorMessage();
+        } else {
+            $this->ouv->setFollowees($followees);
+        }
+    }
+
+    public function setStatusList($statusList) {
+
+        if($statusList === false) {
+            $this->view->showDatabaseErrorMessage();
+        } else {
+            $this->sv->setStatusList($statusList);
+        }
     }
 
 }
