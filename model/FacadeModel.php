@@ -72,11 +72,11 @@ class FacadeModel {
         return $this->authentication->getAllUsersArray();
     }
 
-    public function updateUserData($firstName, $lastName, $emailAddress, $newPassword, $repeatNewPassword) {
+    public function updateUserData($firstName, $lastName, $emailAddress, $description, $newPassword, $repeatNewPassword) {
 
         $this->profile = new \model\Profile($this->getCurrentlyLoggedInUser());
 
-        return $this->profile->updateUser($firstName, $lastName, $emailAddress, $newPassword, $repeatNewPassword);
+        return $this->profile->updateUser($firstName, $lastName, $emailAddress, $description, $newPassword, $repeatNewPassword);
 
     }
 
@@ -93,10 +93,10 @@ class FacadeModel {
     }
 
     public function addNewStatus($content) {
-        $this->status->addNewStatus($this->getCurrentlyLoggedInUser(), $content);
+        return $this->status->addNewStatus($this->getCurrentlyLoggedInUser(), $content);
     }
 
     public function getStatusArray() {
-        return $this->status->getStatusArray($this->getCurrentlyLoggedInUser());
+        return $this->status->getStatusArray($this->getCurrentlyLoggedInUser(), $this->getAllUsers());
     }
 }

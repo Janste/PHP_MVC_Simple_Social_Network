@@ -45,9 +45,15 @@ class OtherUsersView {
 
     /**
      * Sets the list of all users that are registered on this website
-     * @param $usersArray
+     * @param array $usersArray
+     * @throws \Exception
      */
-    public function setCurrentListOfUsers($usersArray) {
+    public function setCurrentListOfUsers($usersArray = array()) {
+
+        if (is_null($usersArray)) {
+            throw new \Exception("No users in the list");
+        }
+
         $this->allUsers = $usersArray;
     }
 
@@ -56,14 +62,25 @@ class OtherUsersView {
      * @param \model\User $loggedInUser
      */
     public function setUser(\model\User $loggedInUser) {
+
+        if (is_null($loggedInUser)) {
+            throw new \Exception("Unknown user");
+        }
+
         $this->mainUser = $loggedInUser;
     }
 
     /**
      * Sets the followees for the user that is currently logged in
-     * @param $followeesArray
+     * @param array $followeesArray
+     * @throws \Exception
      */
-    public function setFollowees($followeesArray) {
+    public function setFollowees($followeesArray = array()) {
+
+        if (is_null($followeesArray)) {
+            throw new \Exception("No followees in the list");
+        }
+
         $this->followees = $followeesArray;
     }
 
@@ -77,7 +94,7 @@ class OtherUsersView {
 
         foreach($this->allUsers as $oneUser) {
 
-            if($oneUser == $this->mainUser) {
+            if($oneUser->getUsername() == $this->mainUser->getUsername()) {
                 continue;
             }
 
@@ -111,7 +128,7 @@ class OtherUsersView {
                 $resultString .= '<p>' . 'Username: ' . $oneUser->getUsername() . '</p>';
                 $resultString .= '<p>' . $oneUser->getFirstName() . ' ' . $oneUser->getLastName() . '</p>';
                 $resultString .= '<p>' . $oneUser->getEmailAddress() . '</p>';
-
+                $resultString .= '<p>' . $oneUser->getDescription() . '</p>';
                 $resultString .= $this->displayFollowStopFollowButton($username);
 
                 $resultString .= '</fieldset>';

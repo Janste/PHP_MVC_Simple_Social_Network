@@ -19,7 +19,6 @@ class DB {
     private $dbPassword = 'root';
     private $dbPort = 8889;
 
-
     /**
      * Private constructor. It connect to the DB and
      * crates an instance of this class.
@@ -65,8 +64,7 @@ class DB {
     }
 
     /**
-     * Returns an array of strings, which contains the usernames of those who are the followees of the
-     * currently logged in user
+     * Returns an array which contains querires from the followers table
      * @return array
      * @throws \Exception
      */
@@ -140,7 +138,12 @@ class DB {
         $this->deleteRecord("followers", "username_follower", "username_followee", $follower, $followee);
     }
 
-
+    /**
+     * Returns all queries from the specified table
+     * @param $table
+     * @return array
+     * @throws \Exception
+     */
     public function getAllQueries($table) {
 
         $sql = "SELECT * FROM " . $table; // Select all queries
@@ -158,6 +161,15 @@ class DB {
         return $array;
     }
 
+    /**
+     * Inserts a query into the DB
+     * @param $table
+     * @param $column1
+     * @param $column2
+     * @param $argument1
+     * @param $argument2
+     * @throws \Exception
+     */
     public function insertTwoStringQueries($table, $column1, $column2, $argument1, $argument2) {
 
         $sql = 'INSERT INTO ' . $table . ' (`' . $column1 . '`,`' . $column2 . '`) VALUES (? , ?)';
@@ -177,8 +189,8 @@ class DB {
 
     /**
      * Updates a record
-     * @param $table
-     * @param $identifier
+     * @param $table, the name of the table
+     * @param $identifier, eg. username
      * @param $columnName
      * @param $userName
      * @param $newValue
@@ -186,18 +198,30 @@ class DB {
      */
     public function updateRecord($table, $identifier, $columnName, $userName, $newValue) {
 
-        $sql = 'UPDATE ' . $table . ' SET '. $columnName . '="'. $newValue . '" WHERE ' . $identifier . ' = "'. $userName . '"';
+        $sql = 'UPDATE ' . $table . ' SET ' . $columnName . '=? WHERE ' . $identifier . '= "' . $userName . '"';
 
-        // Execute query
-        $result = $this->conn->query($sql);
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bind_param('s', $newValue);
+
+        $stmt->execute();
 
         // Check for errors
-        if ($result == false) {
+        if ($stmt == false) {
             // Error with the DB. Throw an exception.
             throw new \Exception();
         }
     }
 
+    /**
+     * Deletes a record from DB
+     * @param $table
+     * @param $identifier1
+     * @param $identifier2
+     * @param $follower
+     * @param $followee
+     * @throws \Exception
+     */
     public function deleteRecord($table, $identifier1, $identifier2, $follower, $followee) {
         $sql = 'DELETE FROM ' . $table .
             ' WHERE ' . $identifier1 . ' = "' . $follower . '"

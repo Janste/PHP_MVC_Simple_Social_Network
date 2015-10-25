@@ -61,11 +61,11 @@ class GeneralView {
       <html>
         <head>
           <meta charset="utf-8">
-          <title>Simple Social Network</title>
+          <title>Simple Social Website</title>
         </head>
         <body>
 
-          <h1>Simple Social Network</h1>
+          <h1>Simple Social Website</h1>
 
           ' . $this->showRegisterReturnLink($isLoggedIn) . '
 

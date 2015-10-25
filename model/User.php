@@ -13,6 +13,7 @@ class User {
     private $firstName;
     private $lastName;
     private $emailAddress;
+    private $description;
 
     /**
      * Get username for this user
@@ -87,5 +88,21 @@ class User {
     public function setEmailAddress($emailAddress){
         $this->emailAddress = $emailAddress;
     }
+    /**
+     * Get description
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
 
 }

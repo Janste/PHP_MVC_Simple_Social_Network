@@ -18,17 +18,27 @@ class ProfileView {
     private static $repeatPassword = 'ProfileView::RepeatedPassword';
     private static $saveChanges = 'ProfileView::SaveChanges';
     private static $cookieSessionMessage = 'ProfileView::CookieSessionMessage';
+    private static $description = 'ProfileView::Description';
 
     // Profile web page's URL ending
     private static $editProfileURL = 'edit_profile';
     private static $viewProfileUrl = 'view_profile';
 
+    // Currently logged in user
     private $user;
 
+    /**
+     * Return the URL ending of the edit profile page
+     * @return string
+     */
     public function getEditProfileUrl() {
         return self::$editProfileURL;
     }
 
+    /**
+     * Return the URL ending of the view profile page
+     * @return string
+     */
     public function getViewProfileUrl() {
         return self::$viewProfileUrl;
     }
@@ -98,6 +108,18 @@ class ProfileView {
     }
 
     /**
+     * Get description of the user from the form.
+     */
+    public function getDescription() {
+        if(isset($_POST[self::$description])) {
+            $desc = $_POST[self::$description];
+            return $desc;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Gets the password from the form
      * @return string, containing password, false otherwise
      */
@@ -149,10 +171,16 @@ class ProfileView {
     /**
      * Only displays the user data.
      * @return string
+     * @throws \Exception, is user variable is not set (null)
      */
     public function showViewProfile() {
 
+        if (is_null($this->user)) {
+            throw new \Exception("Unknown user");
+        }
+
         return '<p>Your profile information: </p>
+
 
         <p>Username: ' . $this->user->getUsername() . '</p>
 
@@ -161,6 +189,10 @@ class ProfileView {
         <p>Last name: ' . $this->user->getLastName() . '</p>
 
         <p>Email address: ' . $this->user->getEmailAddress() . '</p>
+
+        <p>Description: ' . $this->user->getDescription() . '</p>
+
+        <br />
 
         ';
 
@@ -171,12 +203,10 @@ class ProfileView {
      */
     public function redirect($messageType) {
 
-        $message = "";
-
         if($messageType === true) {
             $message = "Changes saved successfully";
         } else {
-            $message = "Error. Use only valid characters.";
+            $message = "Error with the database or you used invalid characters!";
         }
 
         $this->setMessage($message);
@@ -188,7 +218,7 @@ class ProfileView {
     }
 
     /**
-     * Sets the message that will be later dispalyed to the user.
+     * Sets the message that will be later displayed to the user.
      * @param $message
      */
     private function setMessage($message) {
@@ -208,7 +238,6 @@ class ProfileView {
         } else {
             return "";
         }
-
     }
 
     /**
@@ -223,6 +252,8 @@ class ProfileView {
 					<legend>Edit your profile</legend>
 					<p id="' . self::$message . '">'  . $this->getSessionMessage() .  '</p>
 
+                    <p>
+
 					<label for="' . self::$firstName . '">First name:</label>
 					<input type="text" id="' . self::$firstName . '" name="' . self::$firstName . '" value="" />
                     <br/>
@@ -235,12 +266,26 @@ class ProfileView {
 					<input type="text" id="' . self::$emailAddress . '" name="' . self::$emailAddress . '" value="" />
                     <br/>
 
+                    </p>
+
+                    <p>
+
+                    <label for="' . self::$description . '">Description:</label><br />
+					<textarea rows="4" cols="50" id="' . self::$description . '" name="' . self::$description . '" /></textarea>
+                    <br/>
+
+                    </p>
+
+                    <p>
+
 					<label for="' . self::$password . '">New password:</label>
 					<input type="password" id="' . self::$password . '" name="' . self::$password . '" />
                     <br/>
                     <label for="' . self::$repeatPassword . '">New password repeat:</label>
 					<input type="password" id="' . self::$repeatPassword . '" name="' . self::$repeatPassword . '" />
                     <br/>
+
+                    </p>
 
 
 					<input type="submit" name="' . self::$saveChanges . '" value="Save changes" />

@@ -8,15 +8,24 @@ class StatusHandler {
 
     public function addNewStatus(\model\User $user, $content) {
 
-        $username = $user->getUsername();
+        if (strlen($content) > 255) {
+            return false;
+        }
 
-        DB::getInstance()->addStatusToDB($username, $content);
-
+        try {
+            $username = $user->getUsername();
+            DB::getInstance()->addStatusToDB($username, $content);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
-    public function getStatusArray(\model\User $user) {
+    public function getStatusArray(\model\User $user, $usersArray) {
 
         $followers = new \model\Followers();
+
+        $followeesArray = $followers->getFollowees($user, $usersArray);
 
         try {
 
@@ -38,21 +47,25 @@ class StatusHandler {
                     $x++;
                 }
 
-                $followeesArray = $followers->getFollowees($user);
-
-                if ($status->getAuthor() === $user->getUsername() || in_array($status->getAuthor(), $followeesArray)) {
+                if ($status->getAuthor() === $user->getUsername()) {
+                    $status->setAuthor($user->getFirstName() . ' ' . $user->getLastName());
                     $statusArray[] = $status;
                 } else {
 
                     foreach ($followeesArray as $followee) {
 
                         if($status->getAuthor() === $followee->getUsername()) {
+                            $status->setAuthor($followee->getFirstName() . ' ' . $followee->getLastName());
                             $statusArray[] = $status;
                         }
                     }
                 }
             }
-            return $statusArray;
+
+            // Reverse this status array so that users can see it from the newest to the oldest
+            $reversedArray = array_reverse($statusArray);
+
+            return $reversedArray;
         } catch (\Exception $e) { // Catch exception
             return false;
         }

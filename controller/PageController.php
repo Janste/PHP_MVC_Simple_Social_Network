@@ -24,17 +24,22 @@ class PageController {
         $this->view->setCurrentFollowees($this->model->getFollowees());
         $this->view->setStatusList($this->model->getStatusArray());
 
+        // If save profile changes button clicked
         if($this->view->getProfileView()->checkSaveChangesButtonClicked()) {
 
+            // Get all data from the form
             $firstName = $this->view->getProfileView()->getFirstName();
             $lastName = $this->view->getProfileView()->getLastName();
             $email = $this->view->getProfileView()->getEmailAddress();
+            $description = $this->view->getProfileView()->getDescription();
             $password = $this->view->getProfileView()->getNewPassword();
             $passwordRepeat = $this->view->getProfileView()->getNewRepeatedPassword();
 
-            $this->view->getProfileView()->redirect($this->model->updateUserData($firstName, $lastName, $email, $password, $passwordRepeat));
+            // Update form and display result
+            $this->view->getProfileView()->redirect($this->model->updateUserData($firstName, $lastName, $email, $description, $password, $passwordRepeat));
 
         }
+        // If follow another user button clicked
         elseif ($this->view->getOtherUsersView()->checkFollowButtonClicked()) {
 
             $followeeUsername = $this->view->getOtherUsersView()->getOtherUserData();
@@ -44,6 +49,7 @@ class PageController {
             $this->view->getOtherUsersView()->redirect($followeeUsername);
 
         }
+        // If stop following another user button clicked
         elseif($this->view->getOtherUsersView()->checkStopFollowingButtonClicked()) {
 
             $followeeUsername = $this->view->getOtherUsersView()->getOtherUserData();
@@ -53,16 +59,11 @@ class PageController {
             $this->view->getOtherUsersView()->redirect($followeeUsername);
 
         }
+        // If submit status button clicked
         elseif($this->view->getStatusView()->checkIfSubmitStatusButtonClicked()) {
 
-            $this->model->addNewStatus($this->view->getStatusView()->getNewStatus());
-            $this->view->getStatusView()->redirect();
+            $this->view->getStatusView()->redirect($this->model->addNewStatus($this->view->getStatusView()->getNewStatus()));
 
         }
-
-
-
-
     }
-
 }

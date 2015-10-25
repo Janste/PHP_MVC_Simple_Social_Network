@@ -72,6 +72,8 @@ class UserArray {
                         $user->setLastName($userData);
                     } elseif ($x == 5) {
                         $user->setEmailAddress($userData);
+                    } elseif ($x == 6) {
+                        $user->setDescription($userData);
                     }
                     $x++;
                 }
